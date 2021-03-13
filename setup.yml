@@ -1,0 +1,52 @@
+---
+  - name: Setup Server
+    hosts: your hosts server
+    become: true
+
+    tasks:
+      - name: Check connection Node
+        ping:
+    
+      - name: Install Docker
+        apt:
+          name: docker.io
+          state: present
+      
+      - name: Ensure doker is running
+        service:
+          name: docker
+          state: started
+          enabled: yes
+      
+      - name: install nginx
+        apt:
+          name: nginx
+          state: present
+      
+      - name: ensure nginx started
+        service:
+          name: nginx
+          state: started
+          enabled: true
+
+      - name: install git
+        apt:
+          name: git
+          state: present
+          
+      - name: install node js repo
+        command: "curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -"
+        ignore_errors: true
+
+      - name: install yarn repo
+        command: "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -"
+        ignore_errors: true
+      
+      - name: Enable yarn repository
+        command:  "echo 'deb https://dl.yarnpkg.com/debian/ stable main' | sudo tee /etc/apt/sources.list.d/yarn.list"
+
+      - name: install yarn
+        apt:
+          name: yarn
+          state: latest
+          update_cache: yes

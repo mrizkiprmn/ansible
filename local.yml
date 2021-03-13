@@ -1,0 +1,19 @@
+---
+  - name: "Simple playbook"
+    hosts: rizkiserver
+    vars_files:
+      - vars.yml
+
+    tasks:
+      - name: Check connection node
+        ping:
+
+      - name: find file
+        find: 
+          paths: /home/rizki/Documents
+          file_type: file
+
+      - name: Clone Project
+        git:
+          repo: "{{gitRepo}}"
+          dest: /home/rizki/Documents/ansible/clone

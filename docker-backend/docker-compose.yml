@@ -1,0 +1,40 @@
+version: "3.7"
+services: 
+  
+  backend:
+    image: mrizkiprmn/backend-jenkins:master
+    networks: 
+      - netnet
+    ports:
+      - "${ports}:8888"
+    env_file: 
+      - ./dockerdb/env
+    deploy:
+      mode: replicated
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 50M
+      depends_on: 
+        - redis
+
+    redis:
+      container_name: redis-coffeeit
+      image: redis:alpine3.12
+      command: redis-server
+      environment: 
+        - REDIS_PORT=6379
+      ports: 
+        - "${ports}:6379"
+      networks: 
+        - netnet
+      volumes: 
+        - ./redis:/data
+  
+networks: 
+    netnet:
+      driver: bridge
+
+volumes: 
+    redis-data:

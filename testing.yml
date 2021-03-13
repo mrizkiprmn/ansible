@@ -1,0 +1,33 @@
+---
+  - name: "Testing image"
+    hosts: your hosts server
+    vars:
+      hub: "mrizkiprmn"
+      proj: "frontend-jenkins"
+      dests: /home/rizkipermana/Documents/project
+      urltest: "your ipv4"
+    
+    tasks:
+      
+      - name: "Check connection"
+        ping:
+
+      - name: "Ensure python docker"
+        become: true
+        pip:
+          name: docker
+      
+      - name: "Create container"
+        community.docker.docker_container:
+          name: "{{proj}}"
+          image: "{{hub}}/{{proj}}"
+          state: started
+          ports:
+            - "8080:80"
+
+      - name: "test container"
+        uri:
+          url: "http://localhost:8080"
+          return_content: yes
+        register: test
+        failed_when: "'<!DOCTYPE html>' not in test.content"

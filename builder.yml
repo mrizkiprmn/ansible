@@ -1,0 +1,42 @@
+---
+  - name: "Image Builder"
+    hosts: localhost
+    vars: 
+      hub: "mrizkiprmn"
+      proj: "frontend-jenkins"
+      dests: /home/rizkipermana/Documents/project
+      repo: https://github.com/mrizkiprmn/frontend-jenkins.git
+
+    tasks:
+
+      - name: "Check connection to node"
+        ping:
+
+      - name: "Esnure git installed"
+        apt:
+          name: git
+          state: present
+
+      - name: "Installing python docker"
+        become: true
+        pip:
+          name: docker
+
+      - name: "Use git module to clone"
+        git:
+          repo: "{{repo}}"
+          dest: "{{dests}}/{{proj}}"
+
+      - name: "Build image"
+        community.docker.docker_image:
+          name: "{{hub}}/{{proj}}"
+          build:
+            path: "{{dests}}/{{proj}}"
+          source: build
+
+      - name: Tag and push to docker hub
+        community.docker.doker_image:
+          name: "{{hub}}/{{proj}}"
+          repository: "{{hub}}/{{proj}}:dev"
+          push: yes
+          source: local
