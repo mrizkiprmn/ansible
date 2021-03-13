@@ -1,0 +1,1 @@
+yourserver ansible_hosts=yourhosts ansible_connection=ssh
